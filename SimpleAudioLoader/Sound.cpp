@@ -44,18 +44,19 @@ const WAVEFORMATEX& SoundSystem::GetFormat()
 	return *Get().format;
 }
 
-void SoundSystem::PlaySoundBuffer(Sound & s, float freqMod, float vol)
+bool SoundSystem::PlaySoundBuffer(Sound & s, float freqMod, float vol)
 {
-
 	std::lock_guard<std::mutex> lock(mutex);
+
 	if (idleChannelPtrs.size() > 0)
 	{
 		activeChannelPtrs.push_back(std::move(idleChannelPtrs.back()));
 		idleChannelPtrs.pop_back();
 		activeChannelPtrs.back()->PlaySoundBuffer(s, freqMod, vol);
 	}
-	
+	return false;
 }
+
 
 SoundSystem::XAudioDll::XAudioDll()
 {
@@ -303,7 +304,7 @@ void SoundSystem::Channel::Stop()
 {
 	assert(pSource && pSound);
 	pSource->Stop();
-	pSource->FlushSourceBuffers();
+ 	pSource->FlushSourceBuffers();
 }
 
 void SoundSystem::Channel::RetargetSound(const Sound* pOld, Sound* pNew)
@@ -950,9 +951,11 @@ Sound& Sound::operator=(Sound && donor)
 	return *this;
 }
 
-void Sound::Play(float freqMod, float vol)
+bool Sound::Play(float freqMod, float vol)
 {
-	SoundSystem::Get().PlaySoundBuffer(*this, freqMod, vol);
+	if (activeChannelPtrs.size() > 1) { return false; }
+	return !SoundSystem::Get().PlaySoundBuffer(*this, freqMod, vol);
+	
 }
 
 void Sound::StopOne()

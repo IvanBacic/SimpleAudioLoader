@@ -77,7 +77,7 @@ public:
 		Channel(const Channel&) = delete;
 		~Channel();
 		void PlaySoundBuffer(class Sound& s, float freqMod, float vol);
-		void Stop();
+		void Stop();	
 	private:
 		void RetargetSound(const Sound* pOld, Sound* pNew);
 	private:
@@ -90,7 +90,7 @@ public:
 	static SoundSystem& Get();
 	static void SetMasterVolume(float vol = 1.0f);
 	static const WAVEFORMATEX& GetFormat();
-	void PlaySoundBuffer(class Sound& s, float freqMod, float vol);
+	bool PlaySoundBuffer(class Sound& s, float freqMod, float vol);
 private:
 	SoundSystem();
 	void DeactivateChannel(Channel& channel);
@@ -140,12 +140,10 @@ public:
 	Sound(const std::wstring& fileName, float loopStart, float loopEnd);
 	Sound(Sound&& donor);
 	Sound& operator=(Sound&& donor);
-	void Play(float freqMod = 1.0f, float vol = 1.0f);
+	bool Play(float freqMod = 1.0f, float vol = 1.0f);
 	void StopOne();
 	void StopAll();
 	~Sound();
-
-
 private:
 	static Sound LoadNonWav(const std::wstring& fileName, LoopType loopType,
 	unsigned int loopStartSample, unsigned int loopEndSample,
@@ -154,6 +152,8 @@ private:
 	Sound(const std::wstring& fileName, LoopType loopType,
 		unsigned int loopStartSample, unsigned int loopEndSample,
 		float loopStartSeconds, float loopEndSeconds);
+
+
 
 private:
 	UINT32 nBytes = 0u;
