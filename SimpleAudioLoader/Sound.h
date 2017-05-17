@@ -7,6 +7,7 @@
 #include <wrl\client.h>
 #include "Exeption.h"
 #include "COMInitializer.h"
+#include "iostream"
 class MFInitializer
 {
 public:
@@ -77,7 +78,8 @@ public:
 		Channel(const Channel&) = delete;
 		~Channel();
 		void PlaySoundBuffer(class Sound& s, float freqMod, float vol);
-		void Stop();	
+		void Stop();
+		int pause(int second);
 	private:
 		void RetargetSound(const Sound* pOld, Sound* pNew);
 	private:
@@ -142,6 +144,7 @@ public:
 	Sound& operator=(Sound&& donor);
 	bool Play(float freqMod = 1.0f, float vol = 1.0f);
 	void StopOne();
+	int pause(int second);
 	void StopAll();
 	~Sound();
 private:

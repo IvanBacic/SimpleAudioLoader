@@ -15,7 +15,7 @@
 #include <functional>
 #include "XAudio\XAudio2.h"
 #include "DXErr.h"
-
+#include "conio.h"
 #pragma comment( lib,"mfplat.lib" )
 #pragma comment( lib,"mfreadwrite.lib" )
 #pragma comment( lib,"mfuuid.lib" )
@@ -967,6 +967,25 @@ void Sound::StopOne()
 	}
 }
 
+int SoundSystem::Channel::pause(int second)
+{
+	assert(pSource && pSound);
+	if (second == 0) {
+		pSource->Stop();
+		return 1;
+	}
+
+	if (second==1) {
+		pSource->Start();
+		return 0;
+	}
+
+}
+int Sound::pause(int second) {
+
+		return activeChannelPtrs.front()->pause(second);
+
+}
 void Sound::StopAll()
 {
 	std::lock_guard<std::mutex> lock(mutex);
